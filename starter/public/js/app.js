@@ -55,8 +55,7 @@ async function loadCatalog(searchQuery = '') {
   hideError();
 
   try {
-    // Define your search enpoint here.
-    const endpoint = '/api';
+    const endpoint = '/api/pokemon';
 
     const response = await fetch(endpoint);
     if (response.status === 404) {
@@ -88,7 +87,7 @@ function renderCatalog(characterList, searchQuery) {
   catalogSection.classList.remove('d-none');
   catalogGrid.innerHTML = '';
   catalogCount.textContent = `${characterList.length} entries`;
-  catalogSubtitle.textContent = searchQuery ? `Search Results for "${searchQuery}"` : 'All Characters';
+  catalogSubtitle.textContent = searchQuery ? `Search Results for "${searchQuery}"` : 'All Pokemon';
 
   characterList.forEach((character) => {
     const col = document.createElement('div');

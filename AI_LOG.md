@@ -17,3 +17,11 @@ This log records specific questions I asked an AI assistant while building the P
 **Help received:** The assistant recommended a module-level cache that is populated only after a successful PokeAPI response. If the request fails, the error is passed to the error middleware and the cache remains empty, so a later request can try again.
 
 **What I applied:** `getPokemonList()` now stores the normalized catalog in memory after the first successful request and reuses it on later calls.
+
+## 3. Connecting the existing card renderer to the catalog response
+
+**Question:** The backend returns an object with `count` and `results`, but the existing frontend renderer expects a list. How should I connect them without rewriting the renderer?
+
+**Help received:** The assistant suggested reading `data.results` from the response and passing that array to the existing `renderCatalog()` function. The current frontend already supports both a raw array and the `{ results }` shape, so only the endpoint needed to change.
+
+**What I applied:** `loadCatalog()` now requests `/api/pokemon` and renders the returned Pokemon list using the existing card creation code.
