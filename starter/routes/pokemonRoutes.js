@@ -1,5 +1,6 @@
 import express from 'express';
-import { getPokemonList } from '../services/pokeapi-service.js';
+import { getPokemonList, searchPokemon, getPokemonDetail } from '../services/pokeapi-service.js';
+import { AppError } from '../utils/appError.js';
 
 const router = express.Router();
 
@@ -12,8 +13,28 @@ router.get('/health', (req, res) => {
 
 router.get('/', async (req, res, next) => {
   try {
-    const catalog = await getPokemonList();
-    res.json(catalog);
+    const search = req.query.search;
+
+    if (!search) {
+      const catalog = await getPokemonList();
+      return res.json(catalog);
+    }
+
+    const results = await searchPokemon(search);
+    if (results.length === 0) {
+      return next(new AppError(`No Pokemon matched "${search}"`, 404));
+    }
+
+    res.json({ count: results.length, results });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/:identifier', async (req, res, next) => {
+  try {
+    const pokemon = await getPokemonDetail(req.params.identifier);
+    res.json(pokemon);
   } catch (error) {
     next(error);
   }
