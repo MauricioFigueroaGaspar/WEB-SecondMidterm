@@ -9,7 +9,7 @@
     "dev": "node --watch server.js"
   },
   "keywords": [],
-  "author": "Mauricio Figueroa, Victor Jaquinot-Fega",
+  "author": "Mauricio Figueroa & Victor Jaquinot-Fega",
   "type": "module",
   "license": "ISC",
   "dependencies": {
