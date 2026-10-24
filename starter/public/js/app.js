@@ -29,6 +29,7 @@ const modalElement = document.getElementById('characters-modal');
 const characterModal = new bootstrap.Modal(modalElement);
 const modalName = document.getElementById('modal-name');
 const modalId = document.getElementById('modal-id');
+const modalHeader = document.getElementById('modal-header');
 const modalImg = document.getElementById('modal-img');
 const modalTypes = document.getElementById('modal-types');
 const modalExp = document.getElementById('modal-exp');
@@ -55,7 +56,10 @@ async function loadCatalog(searchQuery = '') {
   hideError();
 
   try {
-    const endpoint = '/api/pokemon';
+    let endpoint = '/api/pokemon';
+    if (searchQuery) {
+      endpoint = `/api/pokemon?search=${searchQuery}`;
+    }
 
     const response = await fetch(endpoint);
     if (response.status === 404) {
@@ -94,7 +98,7 @@ function renderCatalog(characterList, searchQuery) {
     col.className = 'col';
 
     const card = document.createElement('div');
-    card.className = 'card h-100 char-card bg-body-tertiary border-secondary-subtle text-center p-2';
+    card.className = 'card h-100 char-card text-center p-2';
     card.addEventListener('click', () => openDetail(character.id || character.name));
 
     const img = document.createElement('img');
@@ -128,8 +132,7 @@ async function openDetail(identifier) {
   if (identifier === null || identifier === undefined) return;
 
   try {
-    // Set the enpoint for retrieving the information.
-    const response = await fetch(`/api`);
+    const response = await fetch(`/api/pokemon/${identifier}`);
 
     if (response.status === 404) {
       if (isModalOpen) characterModal.hide();
@@ -164,14 +167,17 @@ function populateModal(character) {
   modalImg.onerror = () => { modalImg.onerror = null; modalImg.src = DEFAULT_IMAGE; };
 
   modalExp.textContent = character.experience ?? '-';
-  modalHeight.textContent = character.height ?? '-';
-  modalWeight.textContent = character.weight ?? '-';
+  modalHeight.textContent = `${character.height} m`;
+  modalWeight.textContent = `${character.weight} kg`;
+
+  // Color the modal header with the Pokemon's main type
+  modalHeader.className = `modal-header text-white type-badge type-${character.types[0]}`;
 
   // Render Types
   modalTypes.innerHTML = '';
   (character.types || []).forEach((type) => {
     const badge = document.createElement('span');
-    badge.className = 'badge bg-info text-uppercase px-3 py-2';
+    badge.className = `badge type-badge type-${type} text-uppercase px-3 py-2`;
     badge.textContent = type;
     modalTypes.appendChild(badge);
   });
